@@ -5,7 +5,9 @@ It takes json file which is generad by dependency check tool as input and conver
 ```pip install cvc-xls-generator```
 
 ## How to use it
-``` from cvc-xls-generator import GenerateXls\njson_file="path to Json File"\noutput_file="Path to output file"\n```
+``` from cvc-xls-generator import GenerateXls```
+```json_file="path to Json File"```
+```output_file="Path to output file"```
 
 ## License
 
