@@ -6,7 +6,8 @@ It takes json file which is generad by dependency check tool as input and conver
 
 ## How to use it
 ```
-from cvc-xls-generator import GenerateXls
+from cvc_xls_generator.xls_creator import GenerateXls
+
 json_report="path to Json File" #eg D:\\dir\\dependency-check.json
 output_report="Path to output file" #eg D:\\dir\\dependency-check-report-project-version.xlsx
 
