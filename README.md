@@ -1,5 +1,5 @@
 # cvc-xls-generator
-It takes json file which is generad by dependency check tool as input and conver it into xlsx file.
+It takes json file which is generad by dependency check tool as input and conver it into xlsx file, while converting to xls it mark false positives by using user defined comments.json file.
 
 ## Installation
 ```pip install cvc-xls-generator```
@@ -21,7 +21,7 @@ gx = GenerateXls(
 gx.makeXL()
 
 ```
-# Template of comments file
+# Comments File
 ```
 {
     "dependency name or jar name with version" : {
