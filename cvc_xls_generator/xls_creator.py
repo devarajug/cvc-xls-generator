@@ -61,7 +61,7 @@ class GenerateXls:
                             filePath.append('/'.join([x for x in dependency.get('filePath').split("\\") if x not in self.escaped_path]))
                             description.append(str(vulnerability.get('description')).replace('\n', ' '))
                             status.append(comments_data.get(vuldependency[-1], {}).get(cve_id[-1], {}).get("Status", "Open"))
-                            auditor_comments.append(comments_data.get(vuldependency[-1], {}).get(cve_id[-1], {}).get("Comment", "need add in JsonFile"))
+                            auditor_comments.append(comments_data.get(vuldependency[-1], {}).get(cve_id[-1], {}).get("Comment", "issue details not present in comments json file"))
 
                             for relatedDependency in dependency.get('relatedDependencies', {}):
                                 filename = relatedDependency.get('filePath').split('\\')[-1].strip()
@@ -71,7 +71,7 @@ class GenerateXls:
                                 description.append(str(vulnerability.get('description')).replace('\n', ' '))
                                 severity.append(vulnerability.get('severity').upper().strip())
                                 status.append(comments_data.get(vuldependency[-1], {}).get(cve_id[-1], {}).get("Status", "Open"))
-                                auditor_comments.append(comments_data.get(vuldependency[-1], {}).get(cve_id[-1], {}).get("Comment", "need add in JsonFile"))
+                                auditor_comments.append(comments_data.get(vuldependency[-1], {}).get(cve_id[-1], {}).get("Comment", "issue details not present in comments json file"))
                         else:
                             vuldependency.append(dependency.get('fileName').strip())
                             cve_id.append(vulnerability.get('name').strip())
@@ -79,7 +79,7 @@ class GenerateXls:
                             filePath.append('/'.join([x for x in dependency.get('filePath').split('\\') if x not in self.escaped_path]))
                             description.append(str(vulnerability.get('description')).replace('\n', ' '))
                             status.append(comments_data.get(vuldependency[-1], {}).get(cve_id[-1], {}).get("Status", "Open"))
-                            auditor_comments.append(comments_data.get(vuldependency[-1], {}).get(cve_id[-1], {}).get("Comment", "need add in JsonFile"))
+                            auditor_comments.append(comments_data.get(vuldependency[-1], {}).get(cve_id[-1], {}).get("Comment", "issue details not present in comments json file"))
 
             result_data = zip(vuldependency, description, cve_id, severity,filePath, status, auditor_comments)
             df_cvc = pd.DataFrame(list(result_data),
