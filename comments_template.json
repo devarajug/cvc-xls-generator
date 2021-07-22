@@ -1,8 +1,0 @@
-{
-    "jar or dependency name with version" :{
-        "cve id" :{
-            "Status" : "status of issue",
-            "Comment" : "Comment that are updated in xls for that issue"
-        }
-    }
-}
