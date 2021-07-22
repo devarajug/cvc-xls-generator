@@ -15,13 +15,14 @@ comments_file = "Path to comments file" #eg D:\\dir\\sample_comments.json
 gx = GenerateXls(
     json_file=json_file,
     output_file=output_file,
-    comments_file=comments_file
+    #comments_file=comments_file #optional if you have comments json file uncomment it.
 )
 
 gx.makeXL()
 
 ```
 # Comments File
+The template of comments json file should be like below and it is optional
 ```
 {
     "dependency name or jar name with version" : {
