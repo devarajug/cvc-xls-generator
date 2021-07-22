@@ -33,7 +33,7 @@ The template of comments json file should be like below and it is optional
     }
 }
 ```
-Download sample of comments file [here](https://raw.githubusercontent.com/devarajug/cvc-xls-generator/master/sample_comments.json)
+Download Sample comments file [here](https://github.com/devarajug/cvc-xls-generator/blob/master/sample_comments.json)
 
 ## License
 
