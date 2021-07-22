@@ -10,11 +10,12 @@ from openpyxl.styles import Font, Alignment, PatternFill
 
 class GenerateXls:
 
-    def __init__(self, json_report, output_report, escaped_path=[]):
+    def __init__(self, json_report, output_report, comments_file, escaped_path=[]):
         self.remove_error = re.compile(''',"analysisExceptions":\[\{<exception>.*</exception>\}\]''')
         self.dependency_check_json = json_report
         self.output_file_name = output_report
         self.escaped_path = escaped_path
+        self.comments_file = comments_file
 
     def readCVCDataFromJsonFile(self):
         if os.path.isfile(self.dependency_check_json):
@@ -30,10 +31,22 @@ class GenerateXls:
             sys.exit("dependency check json report not present at" + str(self.dependency_check_json))
         return cvcJsonData
 
+    def readCommentsFile(self):
+        if os.path.isfile(self.comments_file):
+            try:
+                with open(self.comments_file, 'r') as rb:
+                    Jile_CVC_DATA = json.loads(rb.read())
+            except Exception as e:
+                sys.exit('invalid comments file '+str(e))
+        else:
+            sys.exit("Comments file Not present")
+        return Jile_CVC_DATA
+
     def cvcJsonDataToDataFrame(self):
-        vuldependency, cve_id, severity, filePath, description, status = [[] for i in range(6)]
+        vuldependency, cve_id, severity, filePath, description, status, auditor_comments = [[] for i in range(7)]
         try:
             cvcJsonData = self.readCVCDataFromJsonFile()
+            Jile_CVC_DATA = self.readCommentsFile()
             for dependency in cvcJsonData.get("dependencies", {}):
                 if 'vulnerabilities' in dependency.keys():
                     for vulnerability in dependency.get('vulnerabilities', {}):
@@ -44,7 +57,8 @@ class GenerateXls:
                             severity.append(vulnerability.get('severity').upper().strip())
                             filePath.append('/'.join([x for x in dependency.get('filePath').split("\\") if x not in self.escaped_path]))
                             description.append(str(vulnerability.get('description')).replace('\n', ' '))
-                            status.append("Open")
+                            status.append(Jile_CVC_DATA.get(vuldependency[-1], {}).get(cve_id[-1], {}).get("Status", "Open"))
+                            auditor_comments.append(Jile_CVC_DATA.get(vuldependency[-1], {}).get(cve_id[-1], {}).get("Comment", "need add in JsonFile"))
 
                             for relatedDependency in dependency.get('relatedDependencies', {}):
                                 filename = relatedDependency.get('filePath').split('\\')[-1].strip()
@@ -53,16 +67,18 @@ class GenerateXls:
                                 cve_id.append(vulnerability.get('name').strip())
                                 description.append(str(vulnerability.get('description')).replace('\n', ' '))
                                 severity.append(vulnerability.get('severity').upper().strip())
-                                status.append("Open")
+                                status.append(Jile_CVC_DATA.get(vuldependency[-1], {}).get(cve_id[-1], {}).get("Status", "Open"))
+                                auditor_comments.append(Jile_CVC_DATA.get(vuldependency[-1], {}).get(cve_id[-1], {}).get("Comment", "need add in JsonFile"))
                         else:
                             vuldependency.append(dependency.get('fileName').strip())
                             cve_id.append(vulnerability.get('name').strip())
                             severity.append(vulnerability.get('severity').upper())
                             filePath.append('/'.join([x for x in dependency.get('filePath').split('\\') if x not in self.escaped_path]))
                             description.append(str(vulnerability.get('description')).replace('\n', ' '))
-                            status.append("Open")
+                            status.append(Jile_CVC_DATA.get(vuldependency[-1], {}).get(cve_id[-1], {}).get("Status", "Open"))
+                            auditor_comments.append(Jile_CVC_DATA.get(vuldependency[-1], {}).get(cve_id[-1], {}).get("Comment", "need add in JsonFile"))
 
-            result_data = zip(vuldependency, description, cve_id, severity,filePath, status)
+            result_data = zip(vuldependency, description, cve_id, severity,filePath, status, auditor_comments)
             df_cvc = pd.DataFrame(list(result_data),
                 columns = [
                     "DependencyName",
@@ -70,7 +86,8 @@ class GenerateXls:
                     "CVE",
                     "Severity",
                     "FilePath",
-                    "Status"
+                    "Status",
+                    "Auditor Comment"
                 ]
             )
         except Exception as e:
@@ -117,7 +134,8 @@ class GenerateXls:
                     (df_cvc.loc[i,'CVE'],'Normal'),
                     (df_cvc.loc[i,'Severity'],'Normal'),
                     (df_cvc.loc[i,'FilePath'],'Normal'),
-                    (df_cvc.loc[i,'Status'],'Normal')
+                    (df_cvc.loc[i,'Status'],'Normal'),
+                    (df_cvc.loc[i,'Auditor Comment'],'Normal')
                 ]
                 for col_num, (cell_value, cell_format) in enumerate(row, 1):
                     cell = worksheet.cell(row=row_num, column=col_num)
