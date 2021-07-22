@@ -10,10 +10,10 @@ from openpyxl.styles import Font, Alignment, PatternFill
 
 class GenerateXls:
 
-    def __init__(self, json_report, output_report, comments_file, escaped_path=[]):
+    def __init__(self, json_file, output_file, comments_file=None, escaped_path=[]):
         self.remove_error = re.compile(''',"analysisExceptions":\[\{<exception>.*</exception>\}\]''')
-        self.dependency_check_json = json_report
-        self.output_file_name = output_report
+        self.dependency_check_json = json_file
+        self.output_file_name = output_file
         self.escaped_path = escaped_path
         self.comments_file = comments_file
 
@@ -32,14 +32,17 @@ class GenerateXls:
         return cvcJsonData
 
     def readCommentsFile(self):
-        if os.path.isfile(self.comments_file):
-            try:
-                with open(self.comments_file, 'r') as rb:
-                    comments_data = json.loads(rb.read())
-            except Exception as e:
-                sys.exit('invalid comments file '+str(e))
+        if self.comments_file:
+            if os.path.isfile(self.comments_file):
+                try:
+                    with open(self.comments_file, 'r') as rb:
+                        comments_data = json.loads(rb.read())
+                except Exception as e:
+                    sys.exit('invalid comments file '+str(e))
+            else:
+                sys.exit("Comments file Not present")
         else:
-            sys.exit("Comments file Not present")
+            comments_data = {}
         return comments_data
 
     def cvcJsonDataToDataFrame(self):
