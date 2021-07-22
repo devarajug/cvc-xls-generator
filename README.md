@@ -32,7 +32,7 @@ gx.makeXL()
     }
 }
 ```
-Download sample of comments file [here](./sample_comments.json)
+Download sample of comments file [here](https://raw.githubusercontent.com/devarajug/cvc-xls-generator/master/sample_comments.json)
 
 ## License
 
